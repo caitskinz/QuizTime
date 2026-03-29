@@ -27,7 +27,6 @@
         }
 
         .round-badge {
-            display: inline-block;
             background: #111;
             color: white;
             padding: 6px 12px;
@@ -38,6 +37,26 @@
 
         .field {
             margin-bottom: 16px;
+        }
+
+        header {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .header-image {
+            max-width: 60px;
+            margin-right: 12px;
+            transform: rotate(-20deg);
+        }
+
+        .header-image2 {
+            max-width: 60px;
+            margin-left: 12px;
+            transform: rotate(20deg);
         }
 
         label {
@@ -129,7 +148,10 @@
 </head>
 
 <body>
+    <header><div class="eyeball"><img src="https://raw.githubusercontent.com/caitskinz/QuizTime/refs/heads/main/79db6d53-7ffa-42a8-b615-412e93d1a57f.png" class="header-image"></div>
     <h1>J+J Catch Up Quiz</h1>
+    <div class="eyeball"><img src="https://raw.githubusercontent.com/caitskinz/QuizTime/refs/heads/main/79db6d53-7ffa-42a8-b615-412e93d1a57f.png" class="header-image2"></div>
+    </header>  
     <div class="round-badge" id="roundLabel"></div>
 
     <form id="quizForm">
