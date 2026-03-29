@@ -4,7 +4,8 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Quiz Night</title>
+    <title>J+J Catch Up Quiz</title>
+
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -12,39 +13,13 @@
             margin: 10px auto;
             padding: 15px;
             background: #1a3e2d;
-            color: #f9f3e1
-        }
-
-        .card {
-            background: white;
-            border-radius: 12px;
-            padding: 24px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
-        }
-
-        h1 {
-            margin-top: 10;
-            text-align: center;
-        }
-
-        .round-badge {
-            background: #111;
             color: #f9f3e1;
-            padding: 6px 12px;
-            border: 2px solid #f9f3e1;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            justify-self: center;
-        }
-
-        .field {
-            margin-bottom: 16px;
         }
 
         header {
             display: flex;
-            flex-direction: row;
             justify-content: center;
+            align-items: center;
             text-align: center;
             margin-bottom: 20px;
         }
@@ -61,6 +36,58 @@
             transform: rotate(20deg);
         }
 
+        h1 {
+            margin: 0;
+            font-size: 2rem;
+        }
+
+        .card {
+            background: #ffffff;
+            color: #1a3e2d;
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2);
+        }
+
+        .round-badge {
+            background: #1a3e2d;
+            color: #f9f3e1;
+            padding: 8px 18px;
+            border-radius: 999px;
+            font-weight: bold;
+            text-align: center;
+            width: fit-content;
+            margin: 0 auto 20px auto;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: rgba(26, 62, 45, 0.15);
+            border-radius: 999px;
+            margin-bottom: 20px;
+        }
+
+        .progress {
+            height: 100%;
+            width: 0%;
+            background: #1a3e2d;
+            border-radius: 999px;
+            transition: width 0.3s ease;
+        }
+
+        .field {
+            margin-bottom: 18px;
+        }
+
+        .question-number {
+            font-weight: bold;
+            color: #1a3e2d;
+            margin-bottom: 4px;
+            display: block;
+        }
+
         label {
             display: block;
             font-weight: bold;
@@ -69,21 +96,43 @@
 
         input {
             width: 100%;
-            padding: 10px;
+            padding: 12px;
             border: 1px solid #ccc;
-            border-radius: 8px;
+            border-radius: 10px;
             box-sizing: border-box;
+            font-size: 16px;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #1a3e2d;
+            box-shadow: 0 0 0 3px rgba(26, 62, 45, 0.2);
+        }
+
+        input::placeholder {
+            color: #999;
         }
 
         button {
-            background: #111;
-            color: white;
-            border: none;
-            padding: 12px 16px;
-            border-radius: 8px;
+            background: #1a3e2d;
+            color: #f9f3e1;
+            border: 2px solid #1a3e2d;
+            padding: 14px 18px;
+            border-radius: 12px;
             cursor: pointer;
             width: 100%;
-            font-size: 16px;
+            font-size: 17px;
+            transition: all 0.2s ease;
+        }
+
+        button:hover:not(:disabled) {
+            background: #f9f3e1;
+            color: #1a3e2d;
+            transform: translateY(-1px);
+        }
+
+        button:active:not(:disabled) {
+            transform: translateY(0);
         }
 
         button:disabled {
@@ -94,8 +143,9 @@
         .status {
             margin-top: 16px;
             padding: 12px;
-            border-radius: 8px;
+            border-radius: 10px;
             display: none;
+            animation: fadeIn 0.4s ease-in-out;
         }
 
         .success {
@@ -108,14 +158,32 @@
             color: #8a1f1f;
         }
 
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(5px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            font-size: 0.9rem;
+            opacity: 0.85;
+        }
+
         @media (max-width: 480px) {
             body {
                 padding: 10px;
             }
 
             .card {
-                padding: 16px;
-                border-radius: 12px;
+                padding: 18px;
             }
 
             h1 {
@@ -128,207 +196,211 @@
 
             button {
                 padding: 16px;
-                font-size: 17px;
+                font-size: 18px;
             }
         }
 
-        /* --- Tablet / landscape --- */
         @media (min-width: 768px) {
             .card {
                 padding: 28px;
             }
 
             h1 {
-                font-size: 2rem;
-            }
-
-            .field {
-                margin-bottom: 18px;
+                font-size: 2.2rem;
             }
         }
     </style>
 </head>
 
 <body>
-    <header><div class="eyeball"><img src="https://raw.githubusercontent.com/caitskinz/QuizTime/refs/heads/main/79db6d53-7ffa-42a8-b615-412e93d1a57f.png" class="header-image"></div>
-    <h1>J+J Catch Up Quiz</h1>
-    <div class="eyeball"><img src="https://raw.githubusercontent.com/caitskinz/QuizTime/refs/heads/main/79db6d53-7ffa-42a8-b615-412e93d1a57f.png" class="header-image2"></div>
-    </header>  
-    <div class="round-badge" id="roundLabel"></div>
 
-    <form id="quizForm">
-        <div class="field">
-            <label for="teamName">Name</label>
-            <input id="teamName" name="teamName" required />
+    <header>
+        <img src="https://raw.githubusercontent.com/caitskinz/QuizTime/refs/heads/main/79db6d53-7ffa-42a8-b615-412e93d1a57f.png"
+            class="header-image" alt="Quiz icon">
+        <h1>J+J Catch Up Quiz</h1>
+        <img src="https://raw.githubusercontent.com/caitskinz/QuizTime/refs/heads/main/79db6d53-7ffa-42a8-b615-412e93d1a57f.png"
+            class="header-image2" alt="Quiz icon">
+    </header>
+
+    <div class="card">
+        <div class="round-badge" id="roundLabel">Loading Round...</div>
+
+        <div class="progress-bar">
+            <div class="progress" id="progress"></div>
         </div>
 
-        <div class="field">
-            <label for="q1">Question 1</label>
-            <input id="q1" name="q1" required />
-        </div>
+        <form id="quizForm">
+            <div class="field">
+                <label for="teamName">Team Name</label>
+                <input id="teamName" name="teamName" placeholder="Enter your team name" required />
+            </div>
 
-        <div class="field">
-            <label for="q2">Question 2</label>
-            <input id="q2" name="q2" required />
-        </div>
+            <div class="field">
+                <span class="question-number">Question 1</span>
+                <input id="q1" name="q1" placeholder="Your answer" required />
+            </div>
 
-        <div class="field">
-            <label for="q3">Question 3</label>
-            <input id="q3" name="q3" required />
-        </div>
+            <div class="field">
+                <span class="question-number">Question 2</span>
+                <input id="q2" name="q2" placeholder="Your answer" required />
+            </div>
 
-        <div class="field">
-            <label for="q4">Question 4</label>
-            <input id="q4" name="q4" required />
-        </div>
+            <div class="field">
+                <span class="question-number">Question 3</span>
+                <input id="q3" name="q3" placeholder="Your answer" required />
+            </div>
 
-        <div class="field">
-            <label for="q5">Question 5</label>
-            <input id="q5" name="q5" required />
-        </div>
+            <div class="field">
+                <span class="question-number">Question 4</span>
+                <input id="q4" name="q4" placeholder="Your answer" required />
+            </div>
 
-        <button type="submit" id="submitBtn">Submit Answers</button>
-    </form>
+            <div class="field">
+                <span class="question-number">Question 5</span>
+                <input id="q5" name="q5" placeholder="Your answer" required />
+            </div>
 
-    <div id="status" class="status"></div>
+            <button type="submit" id="submitBtn">Submit Answers</button>
+        </form>
 
+        <div id="status" class="status" aria-live="polite"></div>
+    </div>
 
-   <script>
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzCL1hhMUQWa4HP_z-RXhHe5TGFGNkzjI57LCFNbDRATsJfT6fRNDf4YxhAaTAuLA4z/exec';
+    <footer class="footer">
+        <p>💖 love u miss u 💖</p>
+    </footer>
 
-// Storage keys
-const TEAM_STORAGE_KEY = 'quiz_team_name';
-const LAST_SUBMITTED_ROUND_KEY = 'quiz_last_submitted_round';
+    <script>
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzCL1hhMUQWa4HP_z-RXhHe5TGFGNkzjI57LCFNbDRATsJfT6fRNDf4YxhAaTAuLA4z/exec';
 
-// DOM elements
-const teamInput = document.getElementById('teamName');
-const form = document.getElementById('quizForm');
-const submitBtn = document.getElementById('submitBtn');
-const statusBox = document.getElementById('status');
-const roundLabel = document.getElementById('roundLabel');
+        const TEAM_STORAGE_KEY = 'quiz_team_name';
+        const LAST_SUBMITTED_ROUND_KEY = 'quiz_last_submitted_round';
 
-let CURRENT_ROUND = null;
+        const teamInput = document.getElementById('teamName');
+        const form = document.getElementById('quizForm');
+        const submitBtn = document.getElementById('submitBtn');
+        const statusBox = document.getElementById('status');
+        const roundLabel = document.getElementById('roundLabel');
+        const progressBar = document.getElementById('progress');
 
-// Display status messages
-function showStatus(message, type) {
-  statusBox.textContent = message;
-  statusBox.className = `status ${type}`;
-  statusBox.style.display = 'block';
-}
+        let CURRENT_ROUND = null;
 
-// Fetch current round from Google Apps Script
-async function loadConfig() {
-  try {
-    const res = await fetch(SCRIPT_URL);
-    const config = await res.json();
+        function showStatus(message, type) {
+            statusBox.textContent = message;
+            statusBox.className = `status ${type}`;
+            statusBox.style.display = 'block';
+        }
 
-    const newRound = Number(config.CurrentRound || 1);
+        async function loadConfig() {
+            try {
+                const res = await fetch(SCRIPT_URL);
+                const config = await res.json();
+                const newRound = Number(config.CurrentRound || 1);
 
-    // Only update UI if round actually changed
-    if (CURRENT_ROUND !== newRound) {
-      CURRENT_ROUND = newRound;
-      roundLabel.textContent = `Round ${CURRENT_ROUND}`;
+                if (CURRENT_ROUND !== newRound) {
+                    CURRENT_ROUND = newRound;
+                    roundLabel.textContent = `Round ${CURRENT_ROUND}`;
+                    submitBtn.disabled = false;
+                    showStatus(`Now on Round ${CURRENT_ROUND}`, 'success');
+                }
+            } catch (err) {
+                console.error('Failed to load config', err);
+                showStatus('Unable to load round information.', 'error');
+            }
+        }
 
-      // Enable submission for new round
-      submitBtn.disabled = false;
+        function loadTeamName() {
+            const saved = localStorage.getItem(TEAM_STORAGE_KEY);
+            if (saved) {
+                teamInput.value = saved;
+                teamInput.readOnly = true;
+            }
+        }
 
-      showStatus(`Now on Round ${CURRENT_ROUND}`, 'success');
-    }
-  } catch (err) {
-    console.error('Failed to load config', err);
-    showStatus('Unable to load round information.', 'error');
-  }
-}
+        teamInput.addEventListener('input', () => {
+            const value = teamInput.value.trim();
+            if (value) {
+                localStorage.setItem(TEAM_STORAGE_KEY, value);
+            }
+            updateProgress();
+        });
 
-// Load saved team name
-function loadTeamName() {
-  const saved = localStorage.getItem(TEAM_STORAGE_KEY);
-  if (saved) {
-    teamInput.value = saved;
-    teamInput.readOnly = true; // Lock team name after first submission
-  }
-}
+        const inputs = document.querySelectorAll('#quizForm input[required]');
+        inputs.forEach(input => {
+            input.addEventListener('input', updateProgress);
+        });
 
-// Save team name as user types
-teamInput.addEventListener('input', () => {
-  const value = teamInput.value.trim();
-  if (value) {
-    localStorage.setItem(TEAM_STORAGE_KEY, value);
-  }
-});
+        function updateProgress() {
+            const filled = Array.from(inputs).filter(i => i.value.trim() !== '').length;
+            const percent = (filled / inputs.length) * 100;
+            progressBar.style.width = `${percent}%`;
+        }
 
-// Submit answers
-form.addEventListener('submit', async (event) => {
-  event.preventDefault();
+        form.addEventListener('submit', async (event) => {
+            event.preventDefault();
 
-  if (!CURRENT_ROUND) {
-    showStatus('Round information is still loading. Please wait.', 'error');
-    return;
-  }
+            if (!CURRENT_ROUND) {
+                showStatus('Round information is still loading. Please wait.', 'error');
+                return;
+            }
 
-  const lastSubmittedRound = Number(localStorage.getItem(LAST_SUBMITTED_ROUND_KEY));
+            const lastSubmittedRound = Number(localStorage.getItem(LAST_SUBMITTED_ROUND_KEY));
+            if (lastSubmittedRound === CURRENT_ROUND) {
+                showStatus('You have already submitted answers for this round.', 'error');
+                return;
+            }
 
-  // Prevent duplicate submissions for the same round
-  if (lastSubmittedRound === CURRENT_ROUND) {
-    showStatus('You have already submitted answers for this round.', 'error');
-    return;
-  }
+            submitBtn.disabled = true;
+            statusBox.style.display = 'none';
 
-  submitBtn.disabled = true;
-  statusBox.style.display = 'none';
+            const teamName = teamInput.value.trim();
+            if (!teamName) {
+                showStatus('Please enter your team name.', 'error');
+                submitBtn.disabled = false;
+                return;
+            }
 
-  const teamName = teamInput.value.trim();
+            localStorage.setItem(TEAM_STORAGE_KEY, teamName);
+            teamInput.readOnly = true;
 
-  if (!teamName) {
-    showStatus('Please enter your team name.', 'error');
-    submitBtn.disabled = false;
-    return;
-  }
+            const payload = {
+                teamName,
+                round: CURRENT_ROUND,
+                answers: [
+                    document.getElementById('q1').value.trim(),
+                    document.getElementById('q2').value.trim(),
+                    document.getElementById('q3').value.trim(),
+                    document.getElementById('q4').value.trim(),
+                    document.getElementById('q5').value.trim()
+                ]
+            };
 
-  // Save and lock team name
-  localStorage.setItem(TEAM_STORAGE_KEY, teamName);
-  teamInput.readOnly = true;
+            try {
+                await fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    body: JSON.stringify(payload)
+                });
 
-  const payload = {
-    teamName,
-    round: CURRENT_ROUND,
-    answers: [
-      document.getElementById('q1').value.trim(),
-      document.getElementById('q2').value.trim(),
-      document.getElementById('q3').value.trim(),
-      document.getElementById('q4').value.trim(),
-      document.getElementById('q5').value.trim()
-    ]
-  };
+                localStorage.setItem(LAST_SUBMITTED_ROUND_KEY, CURRENT_ROUND);
+                showStatus('Answers submitted successfully!', 'success');
+                form.reset();
+                loadTeamName();
+                updateProgress();
+            } catch (error) {
+                console.error(error);
+                showStatus('Submission failed. Please try again.', 'error');
+                submitBtn.disabled = false;
+            }
+        });
 
-  try {
-    // Use no-cors to avoid preflight CORS errors with Google Apps Script
-    await fetch(SCRIPT_URL, {
-      method: 'POST',
-      mode: 'no-cors',
-      body: JSON.stringify(payload)
-    });
-
-    // Save last submitted round
-    localStorage.setItem(LAST_SUBMITTED_ROUND_KEY, CURRENT_ROUND);
-
-    showStatus('Answers submitted successfully!', 'success');
-    form.reset();
-    loadTeamName(); // Restore team name after reset
-  } catch (error) {
-    console.error(error);
-    showStatus('Submission failed. Please try again.', 'error');
-    submitBtn.disabled = false;
-  }
-});
-
-// Initialize on page load
-document.addEventListener('DOMContentLoaded', () => {
-  loadTeamName();
-  loadConfig();                   // Load round immediately
-  setInterval(loadConfig, 10000); // Refresh round every 10 seconds
-});
-</script>
+        document.addEventListener('DOMContentLoaded', () => {
+            loadTeamName();
+            loadConfig();
+            setInterval(loadConfig, 10000);
+            updateProgress();
+        });
+    </script>
 </body>
 
 </html>
