@@ -1,566 +1,619 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>J+J Catch Up Quiz</title>
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>J+J Catch Up Quiz</title>
-
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      max-width: 720px;
-      margin: 10px auto;
-      padding: 15px;
-      background: #1a3e2d;
-      color: #f9f3e1;
-    }
-
-    header {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      text-align: center;
-      margin-bottom: 20px;
-    }
-
-    .header-image {
-      max-width: 60px;
-      margin-right: 12px;
-      transform: rotate(-20deg);
-    }
-
-    .header-image2 {
-      max-width: 60px;
-      margin-left: 12px;
-      transform: rotate(20deg);
-    }
-
-    h1 {
-      margin: 0;
-      font-size: 2rem;
-    }
-
-    .card {
-      background: #ffffff;
-      color: #1a3e2d;
-      border-radius: 16px;
-      padding: 24px;
-      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2);
-    }
-
-    .round-badge {
-      background: #1a3e2d;
-      color: #f9f3e1;
-      padding: 8px 18px;
-      border-radius: 999px;
-      font-weight: bold;
-      text-align: center;
-      width: fit-content;
-      margin: 0 auto 20px auto;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
-    }
-
-    .progress-bar {
-      width: 100%;
-      height: 8px;
-      background: rgba(26, 62, 45, 0.15);
-      border-radius: 999px;
-      margin-bottom: 20px;
-    }
-
-    .progress {
-      height: 100%;
-      width: 0%;
-      background: #1a3e2d;
-      border-radius: 999px;
-      transition: width 0.3s ease;
-    }
-
-    .field {
-      margin-bottom: 18px;
-    }
-
-    .question-number {
-      font-weight: bold;
-      color: #1a3e2d;
-      margin-bottom: 4px;
-      display: block;
-    }
-
-    label {
-      display: block;
-      font-weight: bold;
-      margin-bottom: 6px;
-    }
-
-    input {
-      width: 100%;
-      padding: 12px;
-      border: 1px solid #ccc;
-      border-radius: 10px;
-      box-sizing: border-box;
-      font-size: 16px;
-    }
-
-    input:focus {
-      outline: none;
-      border-color: #1a3e2d;
-      box-shadow: 0 0 0 3px rgba(26, 62, 45, 0.2);
-    }
-
-    input::placeholder {
-      color: #999;
-    }
-
-    button {
-      background: #1a3e2d;
-      color: #f9f3e1;
-      border: 2px solid #1a3e2d;
-      padding: 14px 18px;
-      border-radius: 12px;
-      cursor: pointer;
-      width: 100%;
-      font-size: 17px;
-      transition: all 0.2s ease;
-    }
-
-    button:hover:not(:disabled) {
-      background: #f9f3e1;
-      color: #1a3e2d;
-      transform: translateY(-1px);
-    }
-
-    button:active:not(:disabled) {
-      transform: translateY(0);
-    }
-
-    button:disabled {
-      opacity: 0.6;
-      cursor: not-allowed;
-    }
-
-    .status {
-      margin-top: 16px;
-      padding: 12px;
-      border-radius: 10px;
-      display: none;
-      animation: fadeIn 0.4s ease-in-out;
-    }
-
-    .success {
-      background: #e8f7e8;
-      color: #1f6b1f;
-    }
-
-    .error {
-      background: #fdeaea;
-      color: #8a1f1f;
-    }
-
-    @keyframes fadeIn {
-      from {
-        opacity: 0;
-        transform: translateY(5px);
+    <style>
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
       }
-
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    .footer {
-      text-align: center;
-      margin-top: 30px;
-      font-size: 0.9rem;
-      opacity: 0.85;
-    }
-
-    /* Leaderboard Modal */
-    .modal {
-      display: none;
-      position: fixed;
-      z-index: 1000;
-      left: 0;
-      top: 0;
-      width: 100%;
-      height: 100%;
-      background-color: rgba(0, 0, 0, 0.7);
-      backdrop-filter: blur(4px);
-    }
-
-    .modal-content {
-      background: #ffffff;
-      color: #1a3e2d;
-      margin: 8% auto;
-      padding: 24px;
-      border-radius: 16px;
-      width: 90%;
-      max-width: 500px;
-      text-align: center;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-      animation: fadeInScale 0.3s ease;
-    }
-
-    @keyframes fadeInScale {
-      from {
-        opacity: 0;
-        transform: scale(0.95);
-      }
-
-      to {
-        opacity: 1;
-        transform: scale(1);
-      }
-    }
-
-    .close-modal {
-      float: right;
-      font-size: 24px;
-      cursor: pointer;
-      color: #1a3e2d;
-    }
-
-    #leaderboardTable {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 15px;
-    }
-
-    #leaderboardTable th,
-    #leaderboardTable td {
-      padding: 10px;
-      border-bottom: 1px solid #ddd;
-    }
-
-    #leaderboardTable th {
-      background: #1a3e2d;
-      color: #f9f3e1;
-    }
-
-    #leaderboardTable tr:nth-child(even) {
-      background: #f7f7f7;
-    }
-
-    #leaderboardTable tr:first-child td {
-      font-weight: bold;
-      color: #c0392b;
-    }
-
-    .modal button {
-      margin-top: 15px;
-      background: #1a3e2d;
-      color: #f9f3e1;
-      border: none;
-      padding: 12px 18px;
-      border-radius: 10px;
-      cursor: pointer;
-    }
-
-    .modal button:hover {
-      background: #f9f3e1;
-      color: #1a3e2d;
-      border: 2px solid #1a3e2d;
-    }
-
-    @media (max-width: 480px) {
       body {
-        padding: 10px;
+        font-family: Arial, sans-serif;
+        max-width: 720px;
+        margin: 10px auto;
+        padding: 15px;
+        background: #1a3e2d;
+        color: #f9f3e1;
       }
 
-      .card {
-        padding: 18px;
+      header {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        margin-bottom: 20px;
+      }
+
+      .header-image {
+        max-width: 60px;
+        margin-right: 12px;
+        transform: rotate(-20deg);
+      }
+
+      .header-image2 {
+        max-width: 60px;
+        margin-left: 12px;
+        transform: rotate(20deg);
       }
 
       h1 {
-        font-size: 1.4rem;
+        margin: 0;
+        font-size: 2rem;
+      }
+
+      h2 {
+        margin-top: 0;
+        text-align: center;
+      }
+
+      .card {
+        background: #ffffff;
+        color: #1a3e2d;
+        border-radius: 16px;
+        padding: 24px;
+        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2);
+      }
+
+      .round-badge {
+        background: #1a3e2d;
+        color: #f9f3e1;
+        padding: 8px 18px;
+        border-radius: 999px;
+        font-weight: bold;
+        text-align: center;
+        width: fit-content;
+        margin: 0 auto 20px auto;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+      }
+
+      .progress-bar {
+        width: 100%;
+        height: 8px;
+        background: rgba(26, 62, 45, 0.15);
+        border-radius: 999px;
+        margin-bottom: 20px;
+      }
+
+      .progress {
+        height: 100%;
+        width: 0%;
+        background: #1a3e2d;
+        border-radius: 999px;
+        transition: width 0.3s ease;
+      }
+
+      .field {
+        margin-bottom: 18px;
+      }
+
+      .question-number {
+        font-weight: bold;
+        color: #1a3e2d;
+        margin-bottom: 4px;
+        display: block;
+      }
+
+      label {
+        display: block;
+        font-weight: bold;
+        margin-bottom: 6px;
       }
 
       input {
-        padding: 14px;
+        width: 100%;
+        padding: 12px;
+        border: 1px solid #ccc;
+        border-radius: 10px;
+        box-sizing: border-box;
+        font-size: 16px;
+      }
+
+      input:focus {
+        outline: none;
+        border-color: #1a3e2d;
+        box-shadow: 0 0 0 3px rgba(26, 62, 45, 0.2);
+      }
+
+      input::placeholder {
+        color: #999;
       }
 
       button {
+        background: #1a3e2d;
+        color: #f9f3e1;
+        border: 2px solid #1a3e2d;
+        padding: 14px 18px;
+        border-radius: 12px;
+        cursor: pointer;
+        width: 100%;
+        font-size: 17px;
+        transition: all 0.2s ease;
+      }
+
+      button:hover:not(:disabled) {
+        background: #f9f3e1;
+        color: #1a3e2d;
+        transform: translateY(-1px);
+      }
+
+      button:active:not(:disabled) {
+        transform: translateY(0);
+      }
+
+      button:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+      }
+
+      .status {
+        margin-top: 16px;
+        padding: 12px;
+        border-radius: 10px;
+        display: none;
+        animation: fadeIn 0.4s ease-in-out;
+      }
+
+      .success {
+        background: #e8f7e8;
+        color: #1f6b1f;
+      }
+
+      .error {
+        background: #fdeaea;
+        color: #8a1f1f;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(5px);
+        }
+
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .footer {
+        text-align: center;
+        margin-top: 30px;
+        font-size: 0.9rem;
+        opacity: 0.85;
+      }
+
+      /* Leaderboard Modal */
+      /* Leaderboard Modal */
+      .modal {
+        display: none;
+        position: fixed;
+        inset: 0;
+        z-index: 1000;
+
+        background-color: rgba(0, 0, 0, 0.7);
+        backdrop-filter: blur(4px);
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
         padding: 16px;
-        font-size: 18px;
-      }
-    }
-
-    @media (min-width: 768px) {
-      .card {
-        padding: 28px;
       }
 
-      h1 {
-        font-size: 2.2rem;
+      .modal-content {
+        background: #ffffff;
+        color: #1a3e2d;
+
+        width: 100%;
+        max-width: 500px;
+
+        max-height: 90vh; /* Prevent overflow */
+        overflow-y: auto; /* Scroll inside modal */
+
+        border-radius: 16px;
+        padding: 20px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+
+        animation: fadeInScale 0.3s ease;
       }
-    }
-  </style>
-</head>
 
-<body>
+      @keyframes fadeInScale {
+        from {
+          opacity: 0;
+          transform: scale(0.95);
+        }
 
-  <header>
-    <img
-      src="https://raw.githubusercontent.com/caitskinz/QuizTime/refs/heads/main/79db6d53-7ffa-42a8-b615-412e93d1a57f.png"
-      class="header-image" alt="Quiz icon">
-    <h1>J+J Catch Up Quiz</h1>
-    <img
-      src="https://raw.githubusercontent.com/caitskinz/QuizTime/refs/heads/main/79db6d53-7ffa-42a8-b615-412e93d1a57f.png"
-      class="header-image2" alt="Quiz icon">
-  </header>
+        to {
+          opacity: 1;
+          transform: scale(1);
+        }
+      }
 
-  <div class="card">
-    <div class="round-badge" id="roundLabel">Loading Round...</div>
+      .close-modal {
+        float: right;
+        font-size: 24px;
+        cursor: pointer;
+        color: #1a3e2d;
+      }
 
-    <div class="progress-bar">
-      <div class="progress" id="progress"></div>
+      #leaderboardTable {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 15px;
+      }
+
+      #leaderboardTable th,
+      #leaderboardTable td {
+        padding: 10px;
+        border-bottom: 1px solid #ddd;
+      }
+
+      #leaderboardTable th {
+        background: #1a3e2d;
+        color: #f9f3e1;
+        text-align: left;
+      }
+
+      #leaderboardTable tr:nth-child(even) {
+        background: #f7f7f7;
+      }
+
+      #leaderboardTable tr:first-child td {
+        font-weight: bold;
+        color: #c0392b;
+      }
+
+      .modal button {
+        margin-top: 15px;
+        background: #1a3e2d;
+        color: #f9f3e1;
+        border: none;
+        padding: 12px 18px;
+        border-radius: 10px;
+        cursor: pointer;
+      }
+
+      .modal button:hover {
+        background: #f9f3e1;
+        color: #1a3e2d;
+        border: 2px solid #1a3e2d;
+      }
+
+      @media (max-width: 480px) {
+        body {
+          padding: 10px;
+        }
+
+        .card {
+          padding: 18px;
+        }
+
+        h1 {
+          font-size: 1.4rem;
+        }
+
+        input {
+          padding: 14px;
+        }
+
+        button {
+          padding: 16px;
+          font-size: 18px;
+        }
+
+        .modal-content {
+          padding: 16px;
+        }
+
+        #leaderboardTable {
+          font-size: 13px;
+        }
+
+        #leaderboardTable th,
+        #leaderboardTable td {
+          padding: 6px 4px;
+        }
+
+        h2 {
+          font-size: 18px;
+        }
+      }
+
+      @media (min-width: 768px) {
+        .card {
+          padding: 28px;
+        }
+
+        h1 {
+          font-size: 2.2rem;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <header>
+      <img
+        src="https://raw.githubusercontent.com/caitskinz/QuizTime/refs/heads/main/79db6d53-7ffa-42a8-b615-412e93d1a57f.png"
+        class="header-image"
+        alt="Quiz icon"
+      />
+      <h1>J+J Catch Up Quiz</h1>
+      <img
+        src="https://raw.githubusercontent.com/caitskinz/QuizTime/refs/heads/main/79db6d53-7ffa-42a8-b615-412e93d1a57f.png"
+        class="header-image2"
+        alt="Quiz icon"
+      />
+    </header>
+
+    <div class="card">
+      <div class="round-badge" id="roundLabel">Loading Round...</div>
+
+      <div class="progress-bar">
+        <div class="progress" id="progress"></div>
+      </div>
+
+      <form id="quizForm">
+        <div class="field">
+          <label for="teamName">Team Name</label>
+          <input
+            id="teamName"
+            name="teamName"
+            placeholder="Enter your team name"
+            required
+          />
+        </div>
+
+        <div class="field">
+          <span class="question-number">Question 1</span>
+          <input id="q1" name="q1" placeholder="Your answer" required />
+        </div>
+
+        <div class="field">
+          <span class="question-number">Question 2</span>
+          <input id="q2" name="q2" placeholder="Your answer" required />
+        </div>
+
+        <div class="field">
+          <span class="question-number">Question 3</span>
+          <input id="q3" name="q3" placeholder="Your answer" required />
+        </div>
+
+        <div class="field">
+          <span class="question-number">Question 4</span>
+          <input id="q4" name="q4" placeholder="Your answer" required />
+        </div>
+
+        <div class="field">
+          <span class="question-number">Question 5</span>
+          <input id="q5" name="q5" placeholder="Your answer" required />
+        </div>
+
+        <button type="submit" id="submitBtn">Submit Answers</button>
+      </form>
+
+      <div id="status" class="status" aria-live="polite"></div>
     </div>
 
-    <form id="quizForm">
-      <div class="field">
-        <label for="teamName">Team Name</label>
-        <input id="teamName" name="teamName" placeholder="Enter your team name" required />
+    <!-- Leaderboard Modal -->
+    <div id="leaderboardModal" class="modal">
+      <div class="modal-content">
+        <span class="close-modal" onclick="closeLeaderboard()">&times;</span>
+        <h2>🏆 Results 🏆</h2>
+        <table id="leaderboardTable">
+          <thead>
+            <tr>
+              <th>Rank</th>
+              <th>Team</th>
+              <th>Score</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+        <button onclick="closeLeaderboard()">Close</button>
       </div>
-
-      <div class="field">
-        <span class="question-number">Question 1</span>
-        <input id="q1" name="q1" placeholder="Your answer" required />
-      </div>
-
-      <div class="field">
-        <span class="question-number">Question 2</span>
-        <input id="q2" name="q2" placeholder="Your answer" required />
-      </div>
-
-      <div class="field">
-        <span class="question-number">Question 3</span>
-        <input id="q3" name="q3" placeholder="Your answer" required />
-      </div>
-
-      <div class="field">
-        <span class="question-number">Question 4</span>
-        <input id="q4" name="q4" placeholder="Your answer" required />
-      </div>
-
-      <div class="field">
-        <span class="question-number">Question 5</span>
-        <input id="q5" name="q5" placeholder="Your answer" required />
-      </div>
-
-      <button type="submit" id="submitBtn">Submit Answers</button>
-    </form>
-
-    <div id="status" class="status" aria-live="polite"></div>
-  </div>
-
-  <!-- Leaderboard Modal -->
-  <div id="leaderboardModal" class="modal">
-    <div class="modal-content">
-      <span class="close-modal" onclick="closeLeaderboard()">&times;</span>
-      <h2>🏆 Leaderboard</h2>
-      <table id="leaderboardTable">
-        <thead>
-          <tr>
-            <th>Rank</th>
-            <th>Team</th>
-            <th>Score</th>
-          </tr>
-        </thead>
-        <tbody></tbody>
-      </table>
-      <button onclick="closeLeaderboard()">Close</button>
     </div>
-  </div>
 
-  <footer class="footer">
-    <p>💖 love u miss u 💖</p>
-  </footer>
+    <footer class="footer">
+      <p>💖 love u miss u 💖</p>
+    </footer>
 
-  <script>
-    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx9x0YMJ6LJUowj0Tti8cXi_xhum537V-wYTEFjxtoCilO86T2SzPpJHZcPWoXsX8dx/exec';
-    const TEAM_STORAGE_KEY = 'quiz_team_name';
-    const LAST_SUBMITTED_ROUND_KEY = 'quiz_last_submitted_round';
+    <script>
+      const SCRIPT_URL =
+        "https://script.google.com/macros/s/AKfycbx9x0YMJ6LJUowj0Tti8cXi_xhum537V-wYTEFjxtoCilO86T2SzPpJHZcPWoXsX8dx/exec";
+      const TEAM_STORAGE_KEY = "quiz_team_name";
+      const LAST_SUBMITTED_ROUND_KEY = "quiz_last_submitted_round";
 
-    const teamInput = document.getElementById('teamName');
-    const form = document.getElementById('quizForm');
-    const submitBtn = document.getElementById('submitBtn');
-    const statusBox = document.getElementById('status');
-    const roundLabel = document.getElementById('roundLabel');
-    const progressBar = document.getElementById('progress');
+      const teamInput = document.getElementById("teamName");
+      const form = document.getElementById("quizForm");
+      const submitBtn = document.getElementById("submitBtn");
+      const statusBox = document.getElementById("status");
+      const roundLabel = document.getElementById("roundLabel");
+      const progressBar = document.getElementById("progress");
 
-    let CURRENT_ROUND = null;
+      let CURRENT_ROUND = null;
 
-    function showStatus(message, type) {
-      statusBox.textContent = message;
-      statusBox.className = `status ${type}`;
-      statusBox.style.display = 'block';
-    }
-
-    let leaderboardVisible = false;
-
-async function loadConfig() {
-  try {
-    const res = await fetch(SCRIPT_URL);
-    const config = await res.json();
-    const newRound = Number(config.CurrentRound || 1);
-
-    if (CURRENT_ROUND !== newRound) {
-      CURRENT_ROUND = newRound;
-      roundLabel.textContent = `Round ${CURRENT_ROUND}`;
-      submitBtn.disabled = false;
-      showStatus(`Now on Round ${CURRENT_ROUND}`, 'success');
-    }
-
-    // Display leaderboard when triggered by host
-    if (config.ShowLeaderboard && !leaderboardVisible) {
-      showLeaderboard();
-      leaderboardVisible = true;
-    }
-
-    // Hide leaderboard when turned off
-    if (!config.ShowLeaderboard && leaderboardVisible) {
-      closeLeaderboard();
-      leaderboardVisible = false;
-    }
-
-  } catch (err) {
-    console.error('Failed to load config', err);
-    showStatus('Unable to load round information.', 'error');
-  }
-}
-
-    function loadTeamName() {
-      const saved = localStorage.getItem(TEAM_STORAGE_KEY);
-      if (saved) {
-        teamInput.value = saved;
-        teamInput.readOnly = true;
-      }
-    }
-
-    teamInput.addEventListener('input', () => {
-      const value = teamInput.value.trim();
-      if (value) {
-        localStorage.setItem(TEAM_STORAGE_KEY, value);
-      }
-      updateProgress();
-    });
-
-    const inputs = document.querySelectorAll('#quizForm input[required]');
-    inputs.forEach(input => {
-      input.addEventListener('input', updateProgress);
-    });
-
-    function updateProgress() {
-      const filled = Array.from(inputs).filter(i => i.value.trim() !== '').length;
-      const percent = (filled / inputs.length) * 100;
-      progressBar.style.width = `${percent}%`;
-    }
-
-    form.addEventListener('submit', async (event) => {
-      event.preventDefault();
-
-      if (!CURRENT_ROUND) {
-        showStatus('Round information is still loading. Please wait.', 'error');
-        return;
+      function showStatus(message, type) {
+        statusBox.textContent = message;
+        statusBox.className = `status ${type}`;
+        statusBox.style.display = "block";
       }
 
-      const lastSubmittedRound = Number(localStorage.getItem(LAST_SUBMITTED_ROUND_KEY));
-      if (lastSubmittedRound === CURRENT_ROUND) {
-        showStatus('You have already submitted answers for this round.', 'error');
-        return;
+      let leaderboardVisible = false;
+
+      async function loadConfig() {
+        try {
+          const res = await fetch(SCRIPT_URL);
+          const config = await res.json();
+          const newRound = Number(config.CurrentRound || 1);
+
+          if (CURRENT_ROUND !== newRound) {
+            CURRENT_ROUND = newRound;
+            roundLabel.textContent = `Round ${CURRENT_ROUND}`;
+            submitBtn.disabled = false;
+            showStatus(`Now on Round ${CURRENT_ROUND}`, "success");
+          }
+
+          // Display leaderboard when triggered by host
+          if (config.ShowLeaderboard && !leaderboardVisible) {
+            showLeaderboard();
+            leaderboardVisible = true;
+          }
+
+          // Hide leaderboard when turned off
+          if (!config.ShowLeaderboard && leaderboardVisible) {
+            closeLeaderboard();
+            leaderboardVisible = false;
+          }
+        } catch (err) {
+          console.error("Failed to load config", err);
+          showStatus("Unable to load round information.", "error");
+        }
       }
 
-      submitBtn.disabled = true;
-      statusBox.style.display = 'none';
-
-      const teamName = teamInput.value.trim();
-      if (!teamName) {
-        showStatus('Please enter your team name.', 'error');
-        submitBtn.disabled = false;
-        return;
+      function loadTeamName() {
+        const saved = localStorage.getItem(TEAM_STORAGE_KEY);
+        if (saved) {
+          teamInput.value = saved;
+          teamInput.readOnly = true;
+        }
       }
 
-      localStorage.setItem(TEAM_STORAGE_KEY, teamName);
-      teamInput.readOnly = true;
-
-      const payload = {
-        teamName,
-        round: CURRENT_ROUND,
-        answers: [
-          document.getElementById('q1').value.trim(),
-          document.getElementById('q2').value.trim(),
-          document.getElementById('q3').value.trim(),
-          document.getElementById('q4').value.trim(),
-          document.getElementById('q5').value.trim()
-        ]
-      };
-
-      try {
-        await fetch(SCRIPT_URL, {
-          method: 'POST',
-          mode: 'no-cors',
-          body: JSON.stringify(payload)
-        });
-
-        localStorage.setItem(LAST_SUBMITTED_ROUND_KEY, CURRENT_ROUND);
-        showStatus('Answers submitted successfully!', 'success');
-        form.reset();
-        loadTeamName();
+      teamInput.addEventListener("input", () => {
+        const value = teamInput.value.trim();
+        if (value) {
+          localStorage.setItem(TEAM_STORAGE_KEY, value);
+        }
         updateProgress();
-      } catch (error) {
-        console.error(error);
-        showStatus('Submission failed. Please try again.', 'error');
-        submitBtn.disabled = false;
+      });
+
+      const inputs = document.querySelectorAll("#quizForm input[required]");
+      inputs.forEach((input) => {
+        input.addEventListener("input", updateProgress);
+      });
+
+      function updateProgress() {
+        const filled = Array.from(inputs).filter(
+          (i) => i.value.trim() !== "",
+        ).length;
+        const percent = (filled / inputs.length) * 100;
+        progressBar.style.width = `${percent}%`;
       }
-    });
 
-    document.addEventListener('DOMContentLoaded', () => {
-      loadTeamName();
-      loadConfig();
-      setInterval(loadConfig, 10000);
-      updateProgress();
-    });
+      form.addEventListener("submit", async (event) => {
+        event.preventDefault();
 
-    async function showLeaderboard() {
-      try {
-        const res = await fetch(SCRIPT_URL);
-        const data = await res.json();
-        const leaderboard = data.leaderboard || [];
+        if (!CURRENT_ROUND) {
+          showStatus(
+            "Round information is still loading. Please wait.",
+            "error",
+          );
+          return;
+        }
 
-        const tbody = document.querySelector('#leaderboardTable tbody');
-        tbody.innerHTML = '';
+        const lastSubmittedRound = Number(
+          localStorage.getItem(LAST_SUBMITTED_ROUND_KEY),
+        );
+        if (lastSubmittedRound === CURRENT_ROUND) {
+          showStatus(
+            "You have already submitted answers for this round.",
+            "error",
+          );
+          return;
+        }
 
-        leaderboard.forEach((entry, index) => {
-          const row = document.createElement('tr');
-          row.innerHTML = `
+        submitBtn.disabled = true;
+        statusBox.style.display = "none";
+
+        const teamName = teamInput.value.trim();
+        if (!teamName) {
+          showStatus("Please enter your team name.", "error");
+          submitBtn.disabled = false;
+          return;
+        }
+
+        localStorage.setItem(TEAM_STORAGE_KEY, teamName);
+        teamInput.readOnly = true;
+
+        const payload = {
+          teamName,
+          round: CURRENT_ROUND,
+          answers: [
+            document.getElementById("q1").value.trim(),
+            document.getElementById("q2").value.trim(),
+            document.getElementById("q3").value.trim(),
+            document.getElementById("q4").value.trim(),
+            document.getElementById("q5").value.trim(),
+          ],
+        };
+
+        try {
+          await fetch(SCRIPT_URL, {
+            method: "POST",
+            mode: "no-cors",
+            body: JSON.stringify(payload),
+          });
+
+          localStorage.setItem(LAST_SUBMITTED_ROUND_KEY, CURRENT_ROUND);
+          showStatus("Answers submitted successfully!", "success");
+          form.reset();
+          loadTeamName();
+          updateProgress();
+        } catch (error) {
+          console.error(error);
+          showStatus("Submission failed. Please try again.", "error");
+          submitBtn.disabled = false;
+        }
+      });
+
+      document.addEventListener("DOMContentLoaded", () => {
+        loadTeamName();
+        loadConfig();
+        setInterval(loadConfig, 10000);
+        updateProgress();
+      });
+
+      async function showLeaderboard() {
+        try {
+          const res = await fetch(SCRIPT_URL);
+          const data = await res.json();
+          const leaderboard = data.leaderboard || [];
+
+          const tbody = document.querySelector("#leaderboardTable tbody");
+          tbody.innerHTML = "";
+
+          leaderboard.forEach((entry, index) => {
+            const row = document.createElement("tr");
+            row.innerHTML = `
                 <td>${index + 1}</td>
                 <td>${entry.team}</td>
                 <td>${entry.score}</td>
             `;
-          tbody.appendChild(row);
-        });
+            tbody.appendChild(row);
+          });
 
-        document.getElementById('leaderboardModal').style.display = 'block';
-      } catch (error) {
-        console.error('Failed to load leaderboard:', error);
-        alert('Unable to load leaderboard.');
+          document.getElementById("leaderboardModal").style.display = "block";
+        } catch (error) {
+          console.error("Failed to load leaderboard:", error);
+          alert("Unable to load leaderboard.");
+        }
       }
-    }
 
-    function closeLeaderboard() {
-      document.getElementById('leaderboardModal').style.display = 'none';
-    }
-
-    // Close modal when clicking outside
-    window.onclick = function (event) {
-      const modal = document.getElementById('leaderboardModal');
-      if (event.target === modal) {
-        modal.style.display = 'none';
+      function closeLeaderboard() {
+        document.getElementById("leaderboardModal").style.display = "none";
       }
-    };
-  </script>
-</body>
 
+      // Close modal when clicking outside
+      window.onclick = function (event) {
+        const modal = document.getElementById("leaderboardModal");
+        if (event.target === modal) {
+          modal.style.display = "none";
+        }
+      };
+    </script>
+  </body>
 </html>
