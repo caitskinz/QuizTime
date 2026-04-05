@@ -379,8 +379,7 @@
   </footer>
 
   <script>
-    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzP3LBpH61UyABRQlw6b5IYqXQN46v-ToxtgdZL3p7md_dblbFgamPcXipWIAeqhm-W/exec';
-
+    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx9x0YMJ6LJUowj0Tti8cXi_xhum537V-wYTEFjxtoCilO86T2SzPpJHZcPWoXsX8dx/exec';
     const TEAM_STORAGE_KEY = 'quiz_team_name';
     const LAST_SUBMITTED_ROUND_KEY = 'quiz_last_submitted_round';
 
@@ -399,23 +398,38 @@
       statusBox.style.display = 'block';
     }
 
-    async function loadConfig() {
-      try {
-        const res = await fetch(SCRIPT_URL);
-        const config = await res.json();
-        const newRound = Number(config.CurrentRound || 1);
+    let leaderboardVisible = false;
 
-        if (CURRENT_ROUND !== newRound) {
-          CURRENT_ROUND = newRound;
-          roundLabel.textContent = `Round ${CURRENT_ROUND}`;
-          submitBtn.disabled = false;
-          showStatus(`Now on Round ${CURRENT_ROUND}`, 'success');
-        }
-      } catch (err) {
-        console.error('Failed to load config', err);
-        showStatus('Unable to load round information.', 'error');
-      }
+async function loadConfig() {
+  try {
+    const res = await fetch(SCRIPT_URL);
+    const config = await res.json();
+    const newRound = Number(config.CurrentRound || 1);
+
+    if (CURRENT_ROUND !== newRound) {
+      CURRENT_ROUND = newRound;
+      roundLabel.textContent = `Round ${CURRENT_ROUND}`;
+      submitBtn.disabled = false;
+      showStatus(`Now on Round ${CURRENT_ROUND}`, 'success');
     }
+
+    // Display leaderboard when triggered by host
+    if (config.ShowLeaderboard && !leaderboardVisible) {
+      showLeaderboard();
+      leaderboardVisible = true;
+    }
+
+    // Hide leaderboard when turned off
+    if (!config.ShowLeaderboard && leaderboardVisible) {
+      closeLeaderboard();
+      leaderboardVisible = false;
+    }
+
+  } catch (err) {
+    console.error('Failed to load config', err);
+    showStatus('Unable to load round information.', 'error');
+  }
+}
 
     function loadTeamName() {
       const saved = localStorage.getItem(TEAM_STORAGE_KEY);
