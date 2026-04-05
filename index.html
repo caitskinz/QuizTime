@@ -193,11 +193,8 @@
         position: fixed;
         inset: 0;
         z-index: 1000;
-
         background-color: rgba(0, 0, 0, 0.7);
         backdrop-filter: blur(4px);
-
-        display: flex;
         align-items: center;
         justify-content: center;
 
@@ -436,14 +433,13 @@
       const progressBar = document.getElementById("progress");
 
       let CURRENT_ROUND = null;
+      let leaderboardVisible = false;
 
       function showStatus(message, type) {
         statusBox.textContent = message;
         statusBox.className = `status ${type}`;
         statusBox.style.display = "block";
       }
-
-      let leaderboardVisible = false;
 
       async function loadConfig() {
         try {
@@ -459,13 +455,16 @@
           }
 
           // Display leaderboard when triggered by host
-          if (config.ShowLeaderboard && !leaderboardVisible) {
+          // Show leaderboard when host enables it
+          const showFlag =
+            String(config.ShowLeaderboard).toLowerCase() === "true";
+
+          if (showFlag && !leaderboardVisible) {
             showLeaderboard();
             leaderboardVisible = true;
           }
 
-          // Hide leaderboard when turned off
-          if (!config.ShowLeaderboard && leaderboardVisible) {
+          if (!showFlag && leaderboardVisible) {
             closeLeaderboard();
             leaderboardVisible = false;
           }
@@ -605,6 +604,7 @@
 
       function closeLeaderboard() {
         document.getElementById("leaderboardModal").style.display = "none";
+        document.body.style.overflow = "";
       }
 
       // Close modal when clicking outside
